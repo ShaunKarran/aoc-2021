@@ -19,6 +19,11 @@ fn main() {
         })
         .collect::<Vec<Movement>>();
 
+    part1(&movements);
+    part2(&movements);
+}
+
+fn part1(movements: &Vec<Movement>) {
     let mut horizontal = 0;
     let mut vertical = 0;
     for movement in movements {
@@ -28,5 +33,23 @@ fn main() {
             Movement::Forward(distance) => horizontal += distance,
         }
     }
-    println!("Part A: {}", horizontal * vertical);
+    println!("Part 1: {}", horizontal * vertical);
+}
+
+
+fn part2(movements: &Vec<Movement>) {
+    let mut horizontal = 0;
+    let mut vertical = 0;
+    let mut aim = 0;
+    for movement in movements {
+        match movement {
+            Movement::Up(distance) => aim -= distance,
+            Movement::Down(distance) => aim += distance,
+            Movement::Forward(distance) => {
+                horizontal += distance;
+                vertical += aim * distance;
+            },
+        }
+    }
+    println!("Part 2: {}", horizontal * vertical);
 }
