@@ -36,7 +36,6 @@ fn part1(movements: &Vec<Movement>) {
     println!("Part 1: {}", horizontal * vertical);
 }
 
-
 fn part2(movements: &Vec<Movement>) {
     let mut horizontal = 0;
     let mut vertical = 0;
@@ -48,7 +47,7 @@ fn part2(movements: &Vec<Movement>) {
             Movement::Forward(distance) => {
                 horizontal += distance;
                 vertical += aim * distance;
-            },
+            }
         }
     }
     println!("Part 2: {}", horizontal * vertical);
