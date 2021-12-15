@@ -56,7 +56,7 @@ fn main() {
     }
 
     part1(&numbers, &boards);
-    // part2(&input);
+    part2(&numbers, &boards);
 }
 
 fn part1(numbers: &Vec<i32>, boards: &Vec<Board>) {
@@ -65,7 +65,6 @@ fn part1(numbers: &Vec<i32>, boards: &Vec<Board>) {
         number_draw.push(*number);
 
         let winning_board = boards.iter().find(|board| board.is_winner(&number_draw));
-        dbg!(winning_board);
         let score: Option<i32> = match winning_board {
             Some(board) => Some(board.calculate_score(&number_draw)),
             None => None,
@@ -78,6 +77,22 @@ fn part1(numbers: &Vec<i32>, boards: &Vec<Board>) {
     }
 }
 
-// fn part2(number_draw: &Vec<i32>, boards: &Vec<Board>) {
-//     println!("Part 2: {}", );
-// }
+fn part2(numbers: &Vec<i32>, boards: &Vec<Board>) {
+    let mut number_draw = Vec::new();
+    let mut remaining_boards = boards.clone();
+
+    for number in numbers {
+        number_draw.push(*number);
+
+        if remaining_boards.len() == 1 {
+            let board = remaining_boards[0];
+            if board.is_winner(&number_draw) {
+                let score = board.calculate_score(&number_draw);
+                dbg!(score * number_draw.last().unwrap());
+                return;
+            }
+        }
+
+        remaining_boards = remaining_boards.into_iter().filter(|board| !board.is_winner(&number_draw)).collect();
+    }
+}
