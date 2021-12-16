@@ -15,15 +15,9 @@ impl PartialEq for Point {
     }
 }
 
-enum Direction {
-    Horizontal,
-    Vertical,
-}
-
 struct Points {
     start: Point,
     end: Point,
-    direction: Direction,
     // The previous point that was returned.
     previous: Option<Point>,
 }
@@ -33,7 +27,6 @@ impl Points {
         Self { 
             start: line.start,
             end: line.end,
-            direction: if line.start.x == line.end.x { Direction::Vertical } else { Direction::Horizontal },
             previous: None,
         }
     }
@@ -46,16 +39,17 @@ impl Iterator for Points {
         let next = match &self.previous {
             Some(previous) => {
                 if *previous == self.end { return None }
-                match self.direction {
-                    Direction::Horizontal => {
-                        let increment = if self.start.x < self.end.x { 1 } else { -1 };
-                        Some(Point { x: previous.x + increment, y: previous.y })
-                    },
-                    Direction::Vertical => {
-                        let increment = if self.start.y < self.end.y { 1 } else { -1 };
-                        Some(Point { x: previous.x, y: previous.y + increment })
-                    },
-                }
+                let x_increment = if self.start.x == self.end.x {
+                    0
+                } else {
+                    if self.start.x < self.end.x { 1 } else { -1 }
+                };
+                let y_increment = if self.start.y == self.end.y {
+                    0
+                } else {
+                    if self.start.y < self.end.y { 1 } else { -1 }
+                };
+                Some(Point { x: previous.x + x_increment, y: previous.y + y_increment })
             },
             None => Some(self.start),
         };
@@ -93,7 +87,7 @@ fn main() {
         .collect::<Vec<Line>>();
 
     dbg!(part1(&lines));
-    // dbg!(part2(&lines));
+    dbg!(part2(&lines));
 }
 
 fn part1(lines: &Vec<Line>) -> usize {
@@ -116,5 +110,14 @@ fn part1(lines: &Vec<Line>) -> usize {
 }
 
 fn part2(lines: &Vec<Line>) -> usize {
-    0
+    let mut counts: HashMap<Point, i32> = HashMap::new();
+    for line in lines {
+        for point in line.points() {
+            counts.entry(point).and_modify(|count| *count += 1).or_insert(1);
+        }
+    }
+
+    counts.into_iter()
+        .filter(|(_point, count)| *count >= 2)
+        .count()
 }
