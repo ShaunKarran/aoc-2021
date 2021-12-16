@@ -3,7 +3,7 @@ use std::{
     fs,
 };
 
-#[derive(Debug, Eq, Hash)]
+#[derive(Clone, Copy, Debug, Eq, Hash)]
 struct Point {
     x: i32,
     y: i32,
@@ -15,29 +15,65 @@ impl PartialEq for Point {
     }
 }
 
-// struct Points {
-//     start: Point,
-//     end: Point,
+enum Direction {
+    Horizontal,
+    Vertical,
+}
 
-// }
+struct Points {
+    start: Point,
+    end: Point,
+    direction: Direction,
+    // The previous point that was returned.
+    previous: Option<Point>,
+}
 
-// impl Iterator for Points {
-//     type Item = Point;
+impl Points {
+    fn new(line: Line) -> Self {
+        Self { 
+            start: line.start,
+            end: line.end,
+            direction: if line.start.x == line.end.x { Direction::Vertical } else { Direction::Horizontal },
+            previous: None,
+        }
+    }
+}
 
-//     fn next(&mut self) -> Option<Self::Item> {
+impl Iterator for Points {
+    type Item = Point;
 
-//     }
-// }
+    fn next(&mut self) -> Option<Self::Item> {
+        let next = match &self.previous {
+            Some(previous) => {
+                if *previous == self.end { return None }
+                match self.direction {
+                    Direction::Horizontal => {
+                        let increment = if self.start.x < self.end.x { 1 } else { -1 };
+                        Some(Point { x: previous.x + increment, y: previous.y })
+                    },
+                    Direction::Vertical => {
+                        let increment = if self.start.y < self.end.y { 1 } else { -1 };
+                        Some(Point { x: previous.x, y: previous.y + increment })
+                    },
+                }
+            },
+            None => Some(self.start),
+        };
+        self.previous = next;
+        next
+    }
+}
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 struct Line {
     start: Point,
     end: Point,
 }
 
 impl Line {
-    // fn points(self) -> Points {
-    // }
+    fn points(self) -> Points {
+        Points::new(self)
+    }
 }
 
 fn main() {
@@ -69,7 +105,7 @@ fn part1(lines: &Vec<Line>) {
     
     let mut counts: HashMap<Point, i32> = HashMap::new();
     for line in part_1_lines {
-        for point in point_on_line(line) {
+        for point in line.points() {
             counts.entry(point).and_modify(|count| *count += 1).or_insert(1);
         }
     }
@@ -82,33 +118,4 @@ fn part1(lines: &Vec<Line>) {
 
 fn part2(lines: &Vec<Line>) {
     dbg!();
-}
-
-fn point_on_line(line: &Line) -> Vec<Point> {
-    enum Direction {
-        Horizontal,
-        Vertical,
-    }
-
-    let iteration_direction = if line.start.x == line.end.x { Direction::Horizontal } else { Direction::Vertical };
-    let mut points = Vec::new();
-    let range = match iteration_direction {
-        Direction::Horizontal => {
-            let start = line.start.y;
-            let end = line.end.y;
-            if start < end { start..end + 1 } else { end..start + 1 }
-        }
-        Direction::Vertical => {
-            let start = line.start.x;
-            let end = line.end.x;
-            if start < end { start..end + 1 } else { end..start + 1 }
-        }
-    };
-    for v in range {
-        match iteration_direction {
-            Direction::Horizontal => points.push(Point { x: line.start.x, y: v }),
-            Direction::Vertical => points.push(Point { x: v, y: line.start.y }),
-        }
-    }
-    points
 }
