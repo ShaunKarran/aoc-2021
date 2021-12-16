@@ -1,7 +1,4 @@
-use std::{
-    collections::HashMap,
-    fs,
-};
+use std::{collections::HashMap, fs};
 
 #[derive(Clone, Copy, Debug, Eq, Hash)]
 struct Point {
@@ -24,7 +21,7 @@ struct Points {
 
 impl Points {
     fn new(line: Line) -> Self {
-        Self { 
+        Self {
             start: line.start,
             end: line.end,
             previous: None,
@@ -38,19 +35,32 @@ impl Iterator for Points {
     fn next(&mut self) -> Option<Self::Item> {
         let next = match &self.previous {
             Some(previous) => {
-                if *previous == self.end { return None }
+                if *previous == self.end {
+                    return None;
+                }
                 let x_increment = if self.start.x == self.end.x {
                     0
                 } else {
-                    if self.start.x < self.end.x { 1 } else { -1 }
+                    if self.start.x < self.end.x {
+                        1
+                    } else {
+                        -1
+                    }
                 };
                 let y_increment = if self.start.y == self.end.y {
                     0
                 } else {
-                    if self.start.y < self.end.y { 1 } else { -1 }
+                    if self.start.y < self.end.y {
+                        1
+                    } else {
+                        -1
+                    }
                 };
-                Some(Point { x: previous.x + x_increment, y: previous.y + y_increment })
-            },
+                Some(Point {
+                    x: previous.x + x_increment,
+                    y: previous.y + y_increment,
+                })
+            }
             None => Some(self.start),
         };
         self.previous = next;
@@ -78,10 +88,16 @@ fn main() {
         .map(|(a, b)| (String::from(a), String::from(b)))
         .map(|(start_str, end_str)| {
             let (x, y) = start_str.split_once(',').unwrap();
-            let start: Point = Point { x: x.parse::<i32>().unwrap(), y: y.parse::<i32>().unwrap() };
-    
+            let start: Point = Point {
+                x: x.parse::<i32>().unwrap(),
+                y: y.parse::<i32>().unwrap(),
+            };
+
             let (x, y) = end_str.split_once(',').unwrap();
-            let end: Point = Point { x: x.parse::<i32>().unwrap(), y: y.parse::<i32>().unwrap() };
+            let end: Point = Point {
+                x: x.parse::<i32>().unwrap(),
+                y: y.parse::<i32>().unwrap(),
+            };
             Line { start, end }
         })
         .collect::<Vec<Line>>();
@@ -96,15 +112,19 @@ fn part1(lines: &Vec<Line>) -> usize {
         .filter(|line| line.start.x == line.end.x || line.start.y == line.end.y)
         .collect::<Vec<_>>();
     // dbg!(&part_1_lines);
-    
+
     let mut counts: HashMap<Point, i32> = HashMap::new();
     for line in part_1_lines {
         for point in line.points() {
-            counts.entry(point).and_modify(|count| *count += 1).or_insert(1);
+            counts
+                .entry(point)
+                .and_modify(|count| *count += 1)
+                .or_insert(1);
         }
     }
 
-    counts.into_iter()
+    counts
+        .into_iter()
         .filter(|(_point, count)| *count >= 2)
         .count()
 }
@@ -113,11 +133,15 @@ fn part2(lines: &Vec<Line>) -> usize {
     let mut counts: HashMap<Point, i32> = HashMap::new();
     for line in lines {
         for point in line.points() {
-            counts.entry(point).and_modify(|count| *count += 1).or_insert(1);
+            counts
+                .entry(point)
+                .and_modify(|count| *count += 1)
+                .or_insert(1);
         }
     }
 
-    counts.into_iter()
+    counts
+        .into_iter()
         .filter(|(_point, count)| *count >= 2)
         .count()
 }

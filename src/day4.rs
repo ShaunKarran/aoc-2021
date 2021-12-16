@@ -9,12 +9,20 @@ struct Board {
 
 impl Board {
     fn new() -> Self {
-        Board { rowwise: [[0; 5]; 5], colwise: [[0; 5]; 5] }
+        Board {
+            rowwise: [[0; 5]; 5],
+            colwise: [[0; 5]; 5],
+        }
     }
 
     fn is_winner(self, number_draw: &Vec<i32>) -> bool {
-        self.rowwise.iter().any(|row| row.iter().all(|number| number_draw.contains(&number)))
-        || self.colwise.iter().any(|column| column.iter().all(|number| number_draw.contains(&number)))
+        self.rowwise
+            .iter()
+            .any(|row| row.iter().all(|number| number_draw.contains(&number)))
+            || self
+                .colwise
+                .iter()
+                .any(|column| column.iter().all(|number| number_draw.contains(&number)))
     }
 
     fn calculate_score(self, number_draw: &Vec<i32>) -> i32 {
@@ -46,7 +54,10 @@ fn main() {
     for lines in input[2..].chunks(6) {
         let mut board = Board::new();
         for (i, line) in lines[..5].iter().enumerate() {
-            let numbers = line.split_whitespace().map(|num| num.parse().unwrap()).collect::<Vec<i32>>();
+            let numbers = line
+                .split_whitespace()
+                .map(|num| num.parse().unwrap())
+                .collect::<Vec<i32>>();
             for (j, number) in numbers.iter().enumerate() {
                 board.rowwise[i][j] = *number;
                 board.colwise[j][i] = *number;
@@ -93,6 +104,9 @@ fn part2(numbers: &Vec<i32>, boards: &Vec<Board>) {
             }
         }
 
-        remaining_boards = remaining_boards.into_iter().filter(|board| !board.is_winner(&number_draw)).collect();
+        remaining_boards = remaining_boards
+            .into_iter()
+            .filter(|board| !board.is_winner(&number_draw))
+            .collect();
     }
 }

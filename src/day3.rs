@@ -16,7 +16,11 @@ fn part1(input: &Vec<String>) {
     let mut second_str = String::from("");
     for index in 0..input[0].len() {
         let (number_of_ones, number_of_zeros) = count_bits(input, index);
-        let bit = if number_of_ones > number_of_zeros { '1' } else { '0' };
+        let bit = if number_of_ones > number_of_zeros {
+            '1'
+        } else {
+            '0'
+        };
         let not_bit = if bit == '1' { '0' } else { '1' };
         first_str.push(bit);
         second_str.push(not_bit);
@@ -32,7 +36,11 @@ fn part2(input: &Vec<String>) {
     let mut bit_index = 0;
     while oxygen_numbers.len() > 1 {
         let (number_of_ones, number_of_zeros) = count_bits(&oxygen_numbers, bit_index);
-        let bit = if number_of_ones >= number_of_zeros { '1' } else { '0' };
+        let bit = if number_of_ones >= number_of_zeros {
+            '1'
+        } else {
+            '0'
+        };
         oxygen_numbers = filter_on_bit_index(&oxygen_numbers, bit_index, bit);
         bit_index += 1;
     }
@@ -42,7 +50,11 @@ fn part2(input: &Vec<String>) {
     bit_index = 0;
     while co2_scrubber_numbers.len() > 1 {
         let (number_of_ones, number_of_zeros) = count_bits(&co2_scrubber_numbers, bit_index);
-        let bit = if number_of_ones < number_of_zeros { '1' } else { '0' };
+        let bit = if number_of_ones < number_of_zeros {
+            '1'
+        } else {
+            '0'
+        };
         co2_scrubber_numbers = filter_on_bit_index(&co2_scrubber_numbers, bit_index, bit);
         bit_index += 1;
     }
