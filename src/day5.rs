@@ -92,11 +92,11 @@ fn main() {
         })
         .collect::<Vec<Line>>();
 
-    part1(&lines);
-    // part2(&lines);
+    dbg!(part1(&lines));
+    // dbg!(part2(&lines));
 }
 
-fn part1(lines: &Vec<Line>) {
+fn part1(lines: &Vec<Line>) -> usize {
     let part_1_lines = lines
         .iter()
         .filter(|line| line.start.x == line.end.x || line.start.y == line.end.y)
@@ -110,12 +110,11 @@ fn part1(lines: &Vec<Line>) {
         }
     }
 
-    dbg!(counts.into_iter()
+    counts.into_iter()
         .filter(|(_point, count)| *count >= 2)
         .count()
-    );
 }
 
-fn part2(lines: &Vec<Line>) {
-    dbg!();
+fn part2(lines: &Vec<Line>) -> usize {
+    0
 }
